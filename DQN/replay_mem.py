@@ -24,7 +24,6 @@ class ReplayMemory:
             self.size += 1
         
         self.current_idx = (self.current_idx + 1) % self.max_mem
-        self.size += 1
 
     def sample(self, minibatch_size=32):
         batch = random.sample(self.mem[:self.size], minibatch_size)
