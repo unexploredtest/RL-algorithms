@@ -53,7 +53,7 @@ class AtariAgent:
         ys = rewards + 0.0
         ys[dones == 0] += self.gamma * torch.max(self.network(next_obss))
         qvals = self.network(obss)
-        ys_p = qvals[torch.arange(qvals.size(0)), actions]
+        ys_p = qvals[torch.arange(qvals.size(0), device=qvals.device), actions]
 
         loss = F.mse_loss(ys, ys_p)
 
