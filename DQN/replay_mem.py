@@ -16,20 +16,18 @@ class ReplayMemory:
             next_obs = next_obs.unsqueeze(0)
         
         if(self.full):
-            self.mem[self.current_idx] = (obs, action, reward, next_obs)
+            self.mem[self.current_idx] = (obs, action, reward, done, next_obs)
         else:
             self.mem.append((obs, action, reward, done, next_obs))
             if(self.current_idx >= self.max_mem - 1):
                 self.full = True
+            self.size += 1
         
         self.current_idx = (self.current_idx + 1) % self.max_mem
         self.size += 1
 
     def sample(self, minibatch_size=32):
-        if(self.full):
-            batch = random.sample(self.mem, minibatch_size)
-        else:
-            batch = random.sample(self.mem[:self.size], minibatch_size)
+        batch = random.sample(self.mem[:self.size], minibatch_size)
         
         obss, actions, rewards, dones, next_obss = zip(*batch)
 
