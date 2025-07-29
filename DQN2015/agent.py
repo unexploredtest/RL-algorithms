@@ -24,7 +24,7 @@ class AtariAgent:
         self.target_network = copy.deepcopy(network)
         self.target_interval = target_interval
         self.learn_count = 0
-        self.optim = torch.optim.RMSprop(network.parameters(), lr=lr, alpha=0.99, eps=1e-08)
+        self.optim = torch.optim.RMSprop(network.parameters(), lr=lr, alpha=0.95, eps=0.01, momentum=0.95)
         self.minibatch_size = minibatch_size
 
         self.eps = eps
