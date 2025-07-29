@@ -28,13 +28,21 @@ obs, info = env.reset()
 done = False
 
 losses = []
+total_rewards = []
+total_reward = 0
+total_loss = 0
 
 while frame < total_frames:
     if done:
+        total_rewards.append(total_reward)
+        total_reward = 0
+        losses.append(total_loss)
+        total_loss = 0
         obs, info = env.reset()
 
     action_index = agent.choose_action(torch.from_numpy(obs).unsqueeze(0).to(device))
     obs_next, reward, done, truncated, info = env.step(action_index)
+    total_reward += reward
 
     
     agent.store_transition(torch.from_numpy(obs).to(device),
@@ -45,14 +53,14 @@ while frame < total_frames:
 
     loss = agent.learn()
     if(loss != None):
-        losses.append(loss)
+        total_loss += loss
 
     obs = obs_next
 
     frame += 1
     time_spent = time.time() - start_frame
     if(frame % 1000 == 0):
-        print(f"Frame {frame}, Average loss {np.mean(losses[-200:]):.3f}, took {time_spent:.1f} secs")
+        print(f"Frame {frame}, Average Reward {np.mean(total_rewards[-200:]):.2f}, Average loss {np.mean(losses[-200:]):.3f}, epsilon {agent.eps}, took {time_spent:.1f} secs")
         evaluate(env_name, agent, device)
         start_frame = time.time()
 
