@@ -56,7 +56,11 @@ class AtariAgent:
         obss, actions, rewards, dones, next_obss = self.replay_memory.sample(self.minibatch_size)
 
         ys = rewards + 0.0
-        ys[dones == 0] += self.gamma * torch.max(self.network(next_obss))
+    
+        with torch.no_grad():
+            next_qvals = self.target_network(next_obss)
+            ys[dones == 0] += self.gamma * torch.max(next_qvals, dim=1)[0][dones == 0]
+        
         qvals = self.network(obss)
         ys_p = qvals[torch.arange(qvals.size(0), device=qvals.device), actions]
 
