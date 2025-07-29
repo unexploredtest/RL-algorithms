@@ -11,7 +11,7 @@ import numpy as np
 
 
 class AtariAgent:
-    def __init__(self, nb_actions=4, network=None, lr=0.0001, gamma=0.99, eps=1.0,
+    def __init__(self, nb_actions=4, network=None, lr=0.00025, gamma=0.99, eps=1.0,
         eps_fframe=1e6, eps_final=0.1, minibatch_size=32, min_training_step=1000,
         max_mem=1000000):   
 
@@ -19,7 +19,7 @@ class AtariAgent:
         if(network == None):
             network = AtariCNN(nb_actions)
         self.network = network
-        self.optim = torch.optim.RMSprop(network.parameters(), lr=lr)
+        self.optim = torch.optim.RMSprop(network.parameters(), lr=lr, alpha=0.99, eps=1e-08)
         self.minibatch_size = minibatch_size
 
         self.eps = eps
@@ -37,7 +37,7 @@ class AtariAgent:
         if(eps == None):
             eps = self.eps
 
-        if(random.random() > eps):
+        if(random.random() < eps):
             return random.randint(0, self.nb_actions - 1)
         else:
             with torch.no_grad():
