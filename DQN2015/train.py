@@ -67,5 +67,8 @@ while frame < total_frames:
         start_frame = time.time()
 
     if(frame % eval_interval == 0):
+        agent.save_model("latest.model")
+        agent.save_model(f"frame_{frame // 1000}k.model")
         evaluate(env_name, agent, device)
+        
 
