@@ -9,7 +9,7 @@ from agent import AtariAgent
 import time
 
 
-def evaluate(env_name, agent, device, games_count=5):
+def evaluate(env_name, agent, device, games_count=20):
     env = AtariWrapper(gym.make(env_name, render_mode="rgb_array"), no_lose=False)
     scores = []
     for i in range(games_count):

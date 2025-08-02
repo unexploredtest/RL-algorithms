@@ -19,7 +19,10 @@ device = torch.device("cpu")
 
 network = AtariCNN(nb_actions=nb_actions)
 network.to(device)
-agent = AtariAgent(nb_actions=nb_actions, network=network)
+agent = AtariAgent(nb_actions=nb_actions, network=network, device=device)
+
+info_interval = 1000
+eval_interval = 50000
 
 frame = 0
 
@@ -59,11 +62,10 @@ while frame < total_frames:
 
     frame += 1
     time_spent = time.time() - start_frame
-    if(frame % 1000 == 0):
-        print(f"Frame {frame}, Average Reward {np.mean(total_rewards[-200:]):.2f}, Average loss {np.mean(losses[-200:]):.3f}, epsilon {agent.eps}, took {time_spent:.1f} secs")
-        evaluate(env_name, agent, device)
+    if(frame % info_interval == 0):
+        print(f"Frame {frame}, Average Reward {np.mean(total_rewards[-200:]):.2f}, Average loss {np.mean(losses[-200:]):.3f}, epsilon {agent.eps:.3f}, took {time_spent:.1f} secs")
         start_frame = time.time()
 
-    
-
+    if(frame % eval_interval == 0):
+        evaluate(env_name, agent, device)
 
